@@ -7,7 +7,7 @@
     "nodemon": "^2.0.7"
   },
   "scripts": {
-    "test": "nodemon --napi-modules ./test/server.js"
+    "start": "nodemon --napi-modules ./test/server.js"
   },
   "gypfile": true,
   "name": "test2",
