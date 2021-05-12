@@ -1,0 +1,48 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2015
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test2-native", "test2-native.vcxproj", "{BDCFF283-7594-ABEB-FE27-523B46E5C0E4}"
+	ProjectSection(ProjectDependencies) = postProject
+		{CDCA5488-5E60-BF6E-0D33-9D1080B241FD} = {CDCA5488-5E60-BF6E-0D33-9D1080B241FD}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nothing", "..\node_modules\node-addon-api\src\nothing.vcxproj", "{CDCA5488-5E60-BF6E-0D33-9D1080B241FD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "(Users)", "..\Users", "{83FD2216-DE8C-3729-D4EA-3618B14F3F2D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "(User)", "..\Users\User", "{2E11F16B-6779-90EA-74FD-5446378A7A0F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "(test2)", "..\Users\User\test2", "{E6826F39-A716-973E-EBBD-B92E7204C3BA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "(node_modules)", "..\Users\User\test2\node_modules", "{AF877D92-60C8-AC54-032D-A0B10BAB5667}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "(node-addon-api)", "..\Users\User\test2\node_modules\node-addon-api", "{B91A97E0-686E-83AC-B885-A7B06D653098}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "(src)", "..\Users\User\test2\node_modules\node-addon-api\src", "{F374BD1F-02B2-F68F-5C51-BF2B0B841D52}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BDCFF283-7594-ABEB-FE27-523B46E5C0E4}.Debug|Win32.ActiveCfg = Debug|Win32
+		{BDCFF283-7594-ABEB-FE27-523B46E5C0E4}.Debug|Win32.Build.0 = Debug|Win32
+		{BDCFF283-7594-ABEB-FE27-523B46E5C0E4}.Release|Win32.ActiveCfg = Release|Win32
+		{BDCFF283-7594-ABEB-FE27-523B46E5C0E4}.Release|Win32.Build.0 = Release|Win32
+		{CDCA5488-5E60-BF6E-0D33-9D1080B241FD}.Debug|Win32.ActiveCfg = Debug|Win32
+		{CDCA5488-5E60-BF6E-0D33-9D1080B241FD}.Debug|Win32.Build.0 = Debug|Win32
+		{CDCA5488-5E60-BF6E-0D33-9D1080B241FD}.Release|Win32.ActiveCfg = Release|Win32
+		{CDCA5488-5E60-BF6E-0D33-9D1080B241FD}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2E11F16B-6779-90EA-74FD-5446378A7A0F} = {83FD2216-DE8C-3729-D4EA-3618B14F3F2D}
+		{E6826F39-A716-973E-EBBD-B92E7204C3BA} = {2E11F16B-6779-90EA-74FD-5446378A7A0F}
+		{AF877D92-60C8-AC54-032D-A0B10BAB5667} = {E6826F39-A716-973E-EBBD-B92E7204C3BA}
+		{B91A97E0-686E-83AC-B885-A7B06D653098} = {AF877D92-60C8-AC54-032D-A0B10BAB5667}
+		{F374BD1F-02B2-F68F-5C51-BF2B0B841D52} = {B91A97E0-686E-83AC-B885-A7B06D653098}
+		{CDCA5488-5E60-BF6E-0D33-9D1080B241FD} = {F374BD1F-02B2-F68F-5C51-BF2B0B841D52}
+	EndGlobalSection
+EndGlobal
