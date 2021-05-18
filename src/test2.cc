@@ -5,50 +5,45 @@
 using namespace std;
 
 APIdll::APIdll(const Napi::CallbackInfo& info) : ObjectWrap(info) {
-    cout << "test 1" << endl;
     Napi::Env env = info.Env();
     string normal = info[0].As<Napi::String>().ToString();
     string anomaly = info[1].As<Napi::String>().ToString();
     this->isSimple = info[2].As<Napi::Boolean>();
-    cout << "test 2" << endl;
     this->fileNameNormal = new char[strlen(normal.c_str()) + 1];
     this->fileNameAnomaly = new char[strlen(anomaly.c_str()) + 1];
-    cout << "test 3" << endl;
     strcpy(this->fileNameNormal, normal.c_str());
     strcpy(this->fileNameAnomaly, anomaly.c_str());
-    cout << "test 4" << endl;
     this->tsTrain = new TimeSeries(this->fileNameNormal);
-    cout << "test 5" << endl;
     this->tsAnomaly = new TimeSeries(this->fileNameAnomaly);
-    cout << "test 6" << endl;
     if (this->isSimple) {
-        cout << "test 7" << endl;
         this->simpleAD.learnNormal(*tsTrain);
-        cout << "test 8" << endl;
         this->anomalyReport = simpleAD.detect(*tsAnomaly);
-        cout << "test 9" << endl;
     }
     else {
-        cout << "test 7" << endl;
         this->hybridAD.learnNormal(*tsTrain);
-        cout << "test 8" << endl;
         this->anomalyReport = simpleAD.detect(*tsAnomaly);
-        cout << "test 9" << endl;
     }
 }
 
 Napi::Value APIdll::getAllAnomalyReportCpp(const Napi::CallbackInfo& info) {
     Napi::Env env = info.Env();
-    string returnStr;
-    cout << "get 1" << endl;
-    for (auto i = anomalyReport.begin(); i != anomalyReport.end(); ++i) {
-        cout << i->timeStep << endl;
-        cout << i->description << endl;
-        returnStr += to_string(i->timeStep) + " " + i->description + "\n";
-
+    string returnStr = "{\"anomalies\":[{";
+    map <string, vector<Point*>> unitedMap = this->simpleAD.getSameDescAnomalys(this->anomalyReport);
+    for (const auto& myPair : unitedMap) {
+        returnStr += "\"" + myPair.first + "\":[[";
+        for (int i = 0; i < myPair.second.size(); i++) {
+            if (i == myPair.second.size() - 1) {
+                returnStr += to_string((int)myPair.second.at(i)->x) + ',' + to_string((int)myPair.second.at(i)->y) + "]],";
+            }
+            else {
+                returnStr += to_string((int)myPair.second.at(i)->x) + ',' + to_string((int)myPair.second.at(i)->y) + "],";
+            }
+        }
+        returnStr += "\"reason\":\"CHANGE!!!!!!!!\"},{";
     }
-    cout << "get 2" << endl;
-    cout << returnStr << endl;
+    returnStr.pop_back();
+    returnStr.pop_back();
+    returnStr += "]}";
     return Napi::String::New(env, returnStr);
 }
 

@@ -1,6 +1,7 @@
 #include <iostream>
 #include <memory>
 #include "SimpleAnomalyDetector.h"
+#include <algorithm>
 
 SimpleAnomalyDetector::~SimpleAnomalyDetector()
 {
@@ -74,33 +75,26 @@ void SimpleAnomalyDetector::learnNormal(const TimeSeries& ts)
 {
 	for (int i = 0; i < ts.getNumOfFeatures() - 1; i++)
 	{
-		cout << "norm 1" << endl;
 		correlatedFeatures corFeatures;
 		const featureID* f1;
 		// getting the feature ID of feature1
 		f1 = ts.getFeatureID(i);
-		cout << "norm 2" << endl;
 		corFeatures.feature1 = f1->featureName;
 		float* feature1Arr = new float[ts.getNumOfTimesteps()];
-		cout << "norm 3" << endl;
 		// saving all the feature 1 values
 		copy(f1->values.begin(), f1->values.end(), feature1Arr);
-		cout << "norm 4" << endl;
 		float maxCor = 0;
 		const featureID* f2;
 		for (int j = i + 1; j < ts.getNumOfFeatures(); j++)
 		{
-			cout << "norm for" << endl;
 			const featureID* f2Temp;
 			// getting the second feature ID
 			f2Temp = ts.getFeatureID(j);
-			cout << "norm 5" << endl;
 			int size = ts.getNumOfTimesteps();
 			float* feature2Arr = new float[size];
 			copy(f2Temp->values.begin(), f2Temp->values.end(), feature2Arr);
 			// evaluating their correlation
 			float cor = pearson(feature1Arr, feature2Arr, ts.getNumOfTimesteps());
-			cout << "norm 6" << endl;
 			// if their correlations is the maximum from all of the other features, we will save the second feature as the temp correlatd feature
 			if (abs(cor) > maxCor)
 			{
@@ -114,12 +108,11 @@ void SimpleAnomalyDetector::learnNormal(const TimeSeries& ts)
 		{
 			cf.push_back(corFeatures);
 		}
-		cout << "norm 7" << endl;
 	}
 }
 
 // updating the anomaly vector in case there is an anomaly
-void SimpleAnomalyDetector::updateAnomaly(vector<AnomalyReport>& reportVector, Point* p, correlatedFeatures& corF, int timeStepIndex, string f1, string f2)
+void SimpleAnomalyDetector::updateAnomaly(vector<AnomalyReport>& reportVector, vector<AnomalyReport>& reportVectorParallel, Point* p, correlatedFeatures& corF, int timeStepIndex, string f1, string f2)
 {
 	// if the dev between 2 values of correlated features is bigger than their thrashold
 	if (dev(*p, corF.lin_reg) > corF.threshold)
@@ -129,13 +122,54 @@ void SimpleAnomalyDetector::updateAnomaly(vector<AnomalyReport>& reportVector, P
 		long timeS = timeStepIndex + 1;
 		AnomalyReport* rep = new AnomalyReport(descr, timeS);
 		reportVector.push_back(*rep);
+		descr = f2 + "  " + f1;
+		AnomalyReport* rep1 = new AnomalyReport(descr, timeS);
+		reportVectorParallel.push_back(*rep1);
 	}
+}
+
+// uniting the anomalys that have the same description and are a sequence from the helper anomalys vector
+map <string ,vector<Point*>> SimpleAnomalyDetector::getSameDescAnomalys(vector<AnomalyReport> anomalyVector)
+{
+	vector<Point*> unitedAnomalysVec;
+	string anomalyDesc = anomalyVector.at(0).description;
+	// getting the first anomaly description
+	int anomalyTS = anomalyVector.at(0).timeStep;
+	int counter = 0;
+	for (int i = 1; i < anomalyVector.size(); i++)
+	{
+		if (anomalyVector.at(i).description == anomalyDesc)
+		{
+			if (anomalyVector.at(i).timeStep == anomalyTS + 1)
+			{
+				// we will add 1 to the counter that will count the size of the current sequence
+				counter++;
+				anomalyTS++;
+				if (i + 1 != anomalyVector.size())
+				{
+					continue;
+				}
+			}
+		}
+		// creating a point that its x value is the current united anomaly starting timestep, an its y value is the ending timestep
+		Point* p = new Point(anomalyTS - counter, anomalyTS);
+		// savung the united anomaly in a vector
+		unitedAnomalysVec.push_back(p);
+		unitedMap[anomalyDesc].push_back(p);
+		cout << anomalyDesc << endl;
+		//initializing the description and the time step to the current anomaly
+		anomalyTS = anomalyVector.at(i).timeStep;
+		anomalyDesc = anomalyVector.at(i).description;
+		counter = 0;
+	}
+	return unitedMap;
 }
 
 // detecting anomalys in a flight
 vector<AnomalyReport> SimpleAnomalyDetector::detect(const TimeSeries& ts)
 {
 	vector<AnomalyReport> reportVector;
+	vector<AnomalyReport> reportVectorParallel;
 	// checking for all of the correlated features if there is an anomaly
 	for (int i = 0; i < cf.size(); i++)
 	{
@@ -147,10 +181,12 @@ vector<AnomalyReport> SimpleAnomalyDetector::detect(const TimeSeries& ts)
 			// getting the values of the current time step
 			vector<float> vec = ts.getTimeStemp(j);
 			Point* p = new Point(vec[ts.getFeatureIndex(f1)], vec[ts.getFeatureIndex(f2)]);
-			updateAnomaly(reportVector, p, cf[i], j, f1, f2);
+			updateAnomaly(reportVector, reportVectorParallel, p, cf[i], j, f1, f2);
 			delete (p);
 		}
-
+	}
+	for (int i = 0; i < reportVectorParallel.size(); i++) {
+		reportVector.push_back(reportVectorParallel.at(i));
 	}
 	return reportVector;
 }

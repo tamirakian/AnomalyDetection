@@ -36,20 +36,23 @@ bool HybridAnomalyDetector::updateCor(const TimeSeries& ts, float maxCor, correl
 }
 
 // updating the anomaly vector in case there is an anomaly
-void HybridAnomalyDetector::updateAnomaly(vector<AnomalyReport>& reportVector, Point* p, correlatedFeatures& corF, int timeStepIndex, string f1, string f2)
+void HybridAnomalyDetector::updateAnomaly(vector<AnomalyReport>& reportVector, vector<AnomalyReport>& reportVectorParallel, Point* p, correlatedFeatures& corF, int timeStepIndex, string f1, string f2)
 {
 	// in case the correlated features are fulfill the condition of the parent class
 	if (corF.corrlation >= maxC)
 	{
-		return SimpleAnomalyDetector::updateAnomaly(reportVector, p, corF, timeStepIndex, f1, f2);
+		return SimpleAnomalyDetector::updateAnomaly(reportVector, reportVectorParallel, p, corF, timeStepIndex, f1, f2);
 	}
 	Circle minCircle = Circle(Point(corF.minCenterX, corF.minCenterY), corF.threshold);
 	if (!isPointInsideCircle(*p, minCircle))
 	{
 		// we will report as anomaly
-		string descr = f1 + "-" + f2;
+		string descr = f1 + "  " + f2;
 		long timeS = timeStepIndex + 1;
 		AnomalyReport* rep = new AnomalyReport(descr, timeS);
 		reportVector.push_back(*rep);
+		descr = f2 + "  " + f1;
+		AnomalyReport* rep1 = new AnomalyReport(descr, timeS);
+		reportVectorParallel.push_back(*rep1);
 	}
 }

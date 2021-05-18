@@ -39,6 +39,8 @@ module.exports = {
         const Sinstance = new APIdll("reg_flight.csv", "anomaly_flight.csv", true);
         var x = Sinstance.GetAllAnomalyReportCpp();
         console.log(x);
+        var json = JSON.parse(x);
+        console.log(json);
         console.log("Tests passed- everything looks OK!");
 
         train_data = req.body.train_data;
