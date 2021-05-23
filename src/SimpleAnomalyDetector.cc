@@ -132,6 +132,9 @@ void SimpleAnomalyDetector::updateAnomaly(vector<AnomalyReport>& reportVector, v
 map <string ,vector<Point*>> SimpleAnomalyDetector::getSameDescAnomalys(vector<AnomalyReport> anomalyVector)
 {
 	vector<Point*> unitedAnomalysVec;
+	if (anomalyVector.size() == 0) {
+		return unitedMap;
+	}
 	string anomalyDesc = anomalyVector.at(0).description;
 	// getting the first anomaly description
 	int anomalyTS = anomalyVector.at(0).timeStep;
@@ -156,7 +159,6 @@ map <string ,vector<Point*>> SimpleAnomalyDetector::getSameDescAnomalys(vector<A
 		// savung the united anomaly in a vector
 		unitedAnomalysVec.push_back(p);
 		unitedMap[anomalyDesc].push_back(p);
-		cout << anomalyDesc << endl;
 		//initializing the description and the time step to the current anomaly
 		anomalyTS = anomalyVector.at(i).timeStep;
 		anomalyDesc = anomalyVector.at(i).description;

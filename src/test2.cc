@@ -29,6 +29,10 @@ Napi::Value APIdll::getAllAnomalyReportCpp(const Napi::CallbackInfo& info) {
     Napi::Env env = info.Env();
     string returnStr = "{\"anomalies\":[{";
     map <string, vector<Point*>> unitedMap = this->simpleAD.getSameDescAnomalys(this->anomalyReport);
+    if (unitedMap.empty()) {
+        returnStr += "}]}";;
+        return Napi::String::New(env, returnStr);
+    }
     for (const auto& myPair : unitedMap) {
         returnStr += "\"" + myPair.first + "\":[[";
         for (int i = 0; i < myPair.second.size(); i++) {
