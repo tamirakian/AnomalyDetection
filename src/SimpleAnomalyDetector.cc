@@ -118,11 +118,11 @@ void SimpleAnomalyDetector::updateAnomaly(vector<AnomalyReport>& reportVector, v
 	if (dev(*p, corF.lin_reg) > corF.threshold)
 	{
 		// we will report as anomaly
-		string descr = f1 + "  " + f2;
+		string descr = f1 + " " + f2;
 		long timeS = timeStepIndex + 1;
 		AnomalyReport* rep = new AnomalyReport(descr, timeS);
 		reportVector.push_back(*rep);
-		descr = f2 + "  " + f1;
+		descr = f2 + " " + f1;
 		AnomalyReport* rep1 = new AnomalyReport(descr, timeS);
 		reportVectorParallel.push_back(*rep1);
 	}

@@ -25,6 +25,16 @@ APIdll::APIdll(const Napi::CallbackInfo& info) : ObjectWrap(info) {
     }
 }
 
+string* Parsing(const string& str) {
+    string* tokens = new string[2];
+    string delimiter = " ";
+    string token = str.substr(0, str.find(delimiter));
+    tokens[0] = token;
+    token = str.substr(str.find(delimiter) + 1);
+    tokens[1] = token;
+    return tokens;
+}
+
 Napi::Value APIdll::getAllAnomalyReportCpp(const Napi::CallbackInfo& info) {
     Napi::Env env = info.Env();
     string returnStr = "{\"anomalies\":[{";
@@ -34,7 +44,8 @@ Napi::Value APIdll::getAllAnomalyReportCpp(const Napi::CallbackInfo& info) {
         return Napi::String::New(env, returnStr);
     }
     for (const auto& myPair : unitedMap) {
-        returnStr += "\"" + myPair.first + "\":[[";
+        string* getTokens = Parsing(myPair.first);
+        returnStr += "\"" + getTokens[0] + "\":[[";
         for (int i = 0; i < myPair.second.size(); i++) {
             if (i == myPair.second.size() - 1) {
                 returnStr += to_string((int)myPair.second.at(i)->x) + ',' + to_string((int)myPair.second.at(i)->y) + "]],";
@@ -43,7 +54,8 @@ Napi::Value APIdll::getAllAnomalyReportCpp(const Napi::CallbackInfo& info) {
                 returnStr += to_string((int)myPair.second.at(i)->x) + ',' + to_string((int)myPair.second.at(i)->y) + "],";
             }
         }
-        returnStr += "\"reason\":\"CHANGE!!!!!!!!\"},{";
+        string temp1 = "\"reason\":\"" + getTokens[1] + "\"},{";
+        returnStr += temp1;
     }
     returnStr.pop_back();
     returnStr.pop_back();
