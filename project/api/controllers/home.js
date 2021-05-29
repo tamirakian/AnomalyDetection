@@ -23,6 +23,8 @@ module.exports = {
             res.write('Please choose anomaly file')
 
         } else {
+
+
             let algoType = req.body.algos
             //res.write('The anomalys in ' + algoType + ' algo are:\n')
             let normalFile = req.files.normal_file
@@ -41,21 +43,33 @@ module.exports = {
             myList = model.detectAnomaly(normalPath, anomalyPath, algoType);
             myList = myList.anomalies;
 
-            var selector = '';
-            selector += '<style>table {font-family: arial, sans-serif;border-collapse: collapse;width: 100%;} td, th {border: 1px solid #dddddd; text-align: left;padding: 8px;} tr:nth-child(even) {background-color: #dddddd;}</style>';
-            selector += '<table>';
+            if (typeof myList[0]['reason'] === 'undefined') {
+                res.write('There is no Anomalys');
+            } else {
+                var selector = '';
+                selector += '<style>table {font-family: arial, sans-serif;border-collapse: collapse;width: 100%;} td, th {border: 1px solid #dddddd; text-align: left;padding: 8px;} tr:nth-child(even) {background-color: #dddddd;}</style>';
+                selector += '<table>';
 
-            selector += buildHtmlTable();
+                selector += buildHtmlTable();
 
-            selector += '</table >';
+                selector += '</table >';
+                res.write('<script>var x = document.getElementById("loader");x.style.display = "none";</script>');
+                res.write(selector)
+            }
 
-            res.write(selector);
         }
-
         res.end();
 
     }
 
+}
+function isEmpty(obj) {
+    for (var prop in obj) {
+        if (obj.hasOwnProperty(prop))
+            return false;
+    }
+
+    return true;
 }
 function sleepFor(sleepDuration) {
     var now = new Date().getTime();
@@ -96,7 +110,7 @@ function buildHtmlTable() {
             if (colIndex == 0) {
                 for (var key in rowHash) {
                     cellValue = key
-                    cellValue = cellValue.replace('  ', '<br>')
+                    //cellValue = cellValue.replace('  ', '<br>')
                     break
                 }
 
