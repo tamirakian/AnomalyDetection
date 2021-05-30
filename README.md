@@ -30,6 +30,6 @@ First time running:
 	m)npm start
 4) open a web browser and type in: http://localhost:8080/
 
-The link to the UML: https://files.fm/u/mxn4bzts5
+The link to the UML: https://ibb.co/tDMtz8h
 
 The link to the explenation video: https://drive.google.com/file/d/1uSQHJNocU3cxB_KobmltdSNDI14UbCPU/view
