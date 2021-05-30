@@ -16,11 +16,13 @@ app.use(express.static('view'))
 
 const {
     getHomePage,
-    postDetect
+    postDetect,
+    postDetact
 
 } = require('../controllers/home');
 
 app.get('/', getHomePage);
+app.post('/detact', postDetact);
 app.post('/detect', postDetect);
 
 module.exports = app;

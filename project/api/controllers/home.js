@@ -12,7 +12,61 @@ module.exports = {
 
     // POST search
     postDetect: (req, res) => {
+        if (!req.body.files) {
+            res.status(406).json({
+                error: "Please choose normal and anomaly files"
+            })
 
+        } else if (!req.body.files.normal_file) {
+            res.status(406).json({
+                error: "Please choose normal file"
+            })
+
+        } else if (!req.body.files.anomaly_file) {
+            res.status(406).json({
+                error: "Please choose anomaly file"
+            })
+
+        } else {
+
+
+            let algoType = req.body.body.algos
+            //res.write('The anomalys in ' + algoType + ' algo are:\n')
+            let normalFile = req.body.files.normal_file
+            let anomalyFile = req.body.files.anomaly_file
+
+            var prePath = 'files/';
+
+            var normalPath = prePath + 'normalFile.txt';
+            var contentNormal = normalFile.data.toString();
+            saveFile(normalPath, contentNormal);
+
+            var anomalyPath = prePath + 'anomalyFile.txt';
+            var contentAnomaly = anomalyFile.data.toString();
+            saveFile(anomalyPath, contentAnomaly);
+
+            myList = model.detectAnomaly(normalPath, anomalyPath, algoType);
+            myList = myList.anomalies;
+
+            if (typeof myList[0]['reason'] === 'undefined') {
+                res.status(406).json({
+                    error: "There are no Anomalys"
+                })
+            } else {
+                res.status(200).json({
+                    anomalies: myList
+                })
+
+            }
+
+        }
+
+        res.end();
+
+    },
+
+    // POST search
+    postDetact: (req, res) => {
         if (!req.files) {
             res.write('Please choose normal and anomaly files')
 
@@ -44,7 +98,7 @@ module.exports = {
             myList = myList.anomalies;
 
             if (typeof myList[0]['reason'] === 'undefined') {
-                res.write('There is no Anomalys');
+                res.write('There are no Anomalys');
             } else {
                 var selector = '';
                 selector += '<style>table {font-family: arial, sans-serif;border-collapse: collapse;width: 100%;} td, th {border: 1px solid #dddddd; text-align: left;padding: 8px;} tr:nth-child(even) {background-color: #dddddd;}</style>';

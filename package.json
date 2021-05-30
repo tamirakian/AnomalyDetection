@@ -9,6 +9,7 @@
     "FileReader": "^0.10.2",
     "mongoose": "^5.12.8",
     "node-addon-api": "^1.7.2",
+    "node-gyp": "^8.1.0",
     "nodemon": "^2.0.7"
   },
   "scripts": {
