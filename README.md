@@ -32,4 +32,4 @@ First time running:
 
 The link to the UML: https://ibb.co/tDMtz8h
 
-The link to the explenation video: https://drive.google.com/file/d/1uSQHJNocU3cxB_KobmltdSNDI14UbCPU/view
+The link to the explenation video: https://drive.google.com/file/d/1bnHIS_G-IJtfkyrR1GetnQgrBTOZMlkS/view
